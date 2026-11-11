@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NACOS BIU Feedback</title>
+<meta name="description" content="Share a suggestion, a commendation or a complaint with NACOS at Benson Idahosa University.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    :root{
+    --ground:#fcfcfd; --alt:#f4f3f4; --text:#141314; --text-2:#454545; --muted:#5c5c5c;
+    --inverse:#141314; --inverse-text:#fcfcfd; --action:#111113; --hairline:#dddddd;
+    --ok:#15803d; --bad:#b91c1c;
+    --display:"Host Grotesk",system-ui,sans-serif; --body:"Instrument Sans",system-ui,sans-serif;
+    --r:16px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;scroll-padding-top:88px}
+    body{background:var(--ground);color:var(--text);font:400 16px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+    a{color:inherit}
+    button{font:inherit;color:inherit}
+    ::selection{background:var(--text);color:var(--ground)}
+    :focus-visible{outline:2px solid var(--text);outline-offset:3px;border-radius:6px}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+    .skip{position:absolute;left:-999px;top:8px;background:var(--action);color:#fff;padding:8px 16px;border-radius:9999px;z-index:100}
+    .skip:focus{left:8px}
+    .muted{color:var(--muted)}
+    .kicker{font:600 13px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:9999px;padding:13px 26px;font:500 16px var(--body);text-decoration:none;border:1px solid var(--action);background:var(--action);color:var(--ground);cursor:pointer;transition:transform .15s,background .15s,border-color .15s}
+    .btn:hover{transform:translateY(-1px);background:#2a292c}
+    .btn:active{transform:translateY(0)}
+    .btn.ghost{background:transparent;color:var(--text);border-color:var(--hairline)}
+    .btn.ghost:hover{border-color:var(--text);background:transparent}
+    .btn.light{background:var(--inverse-text);color:var(--inverse);border-color:var(--inverse-text)}
+    .btn.light:hover{background:#fff}
+    .btn.ghost-inv{background:transparent;color:var(--inverse-text);border-color:#6b6a6c}
+    .btn.ghost-inv:hover{border-color:var(--inverse-text);background:transparent}
+    .btn[disabled]{opacity:.6;cursor:progress;transform:none}
+
+    /* Header */
+    .site-header{position:sticky;top:0;z-index:50;background:rgba(252,252,253,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+    .bar{display:flex;align-items:center;justify-content:space-between;height:80px}
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;font:600 18px var(--display);letter-spacing:-.01em}
+    .brand em{font-style:normal;font-weight:400;color:var(--muted)}
+    .logo{position:relative;width:42px;height:42px;border-radius:50%;background:var(--alt);display:grid;place-items:center;overflow:hidden;flex:none}
+    .logo b{font:600 16px var(--display)}
+    .logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#fff}
+    .nav{display:flex;align-items:center;gap:32px}
+    .nav a:not(.btn){text-decoration:none;color:var(--text-2);font-weight:500}
+    .nav a:not(.btn):hover{color:var(--text);text-decoration:underline;text-underline-offset:6px}
+    .nav-cta{padding:10px 22px}
+    .menu-btn{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--hairline);background:transparent;cursor:pointer;position:relative}
+    .menu-btn span{position:absolute;left:13px;right:13px;height:2px;background:var(--text);border-radius:2px;transition:transform .25s,top .25s}
+    .menu-btn span:first-child{top:18px}.menu-btn span:last-child{top:24px}
+    .menu-btn[aria-expanded="true"] span:first-child{top:21px;transform:rotate(45deg)}
+    .menu-btn[aria-expanded="true"] span:last-child{top:21px;transform:rotate(-45deg)}
+
+    /* Hero */
+    .hero{position:relative;text-align:center;padding:88px 0 96px;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--hairline) 1.2px,transparent 1.2px);background-size:28px 28px;-webkit-mask-image:radial-gradient(ellipse 60% 45% at 50% 30%,#000,transparent);mask-image:radial-gradient(ellipse 60% 45% at 50% 30%,#000,transparent);opacity:.9;pointer-events:none}
+    .hero .wrap{position:relative}
+    .eyebrow{display:inline-flex;align-items:center;gap:10px;background:var(--alt);border:1px solid var(--hairline);border-radius:9999px;padding:7px 18px;font-size:14px;font-weight:500;color:var(--text-2)}
+    .eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--text)}
+    h1{font:500 80px/1 var(--display);letter-spacing:-.04em;margin:30px auto 26px;max-width:14ch}
+    .mark{position:relative;white-space:nowrap}
+    .mark::after{content:"";position:absolute;left:0;right:0;bottom:.04em;height:.12em;background:var(--text);border-radius:9999px;transform-origin:left;animation:draw .9s .4s cubic-bezier(.2,.8,.2,1) both}
+    @keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+    .lede{font-size:20px;line-height:1.55;color:var(--text-2);max-width:54ch;margin:0 auto}
+    .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:36px}
+
+    /* Cards */
+    .choices{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:88px;text-align:left}
+    .card{position:relative;display:flex;flex-direction:column;align-items:flex-start;background:var(--alt);border:1px solid transparent;border-radius:var(--r);padding:32px;min-height:320px;cursor:pointer;text-align:left;overflow:hidden;transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .2s,box-shadow .25s}
+    .card::before{content:"";position:absolute;inset:0;background:radial-gradient(260px circle at var(--mx,50%) var(--my,0%),rgba(255,255,255,.9),transparent 70%);opacity:0;transition:opacity .25s;pointer-events:none}
+    .card:hover{transform:translateY(-6px);border-color:var(--text);box-shadow:0 24px 40px -24px rgba(20,19,20,.35)}
+    .card:hover::before{opacity:1}
+    .card > *{position:relative}
+    .icon{width:56px;height:56px;border-radius:50%;background:var(--ground);border:1px solid var(--hairline);display:grid;place-items:center}
+    .icon svg{width:26px;height:26px;fill:none;stroke:var(--text);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+    .tag{position:absolute !important;top:36px;right:32px;font:500 14px var(--display);color:var(--muted)}
+    .card h2{font:500 28px/1.15 var(--display);letter-spacing:-.02em;margin:auto 0 10px;padding-top:40px}
+    .card p{color:var(--text-2)}
+    .go{margin-top:22px;display:inline-flex;align-items:center;gap:8px;font-weight:500}
+    .go svg{width:18px;height:18px;fill:none;stroke:var(--text);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+    .card:hover .go svg{transform:translateX(5px)}
+
+    /* Bands */
+    .band,.faq{padding:96px 0 64px}
+    .band{background:var(--alt)}
+    .head h2{font:500 48px/1.05 var(--display);letter-spacing:-.03em}
+    .steps{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px;position:relative;counter-reset:s}
+    .steps::before{content:"";position:absolute;top:28px;left:56px;right:56px;height:2px;background:var(--hairline)}
+    .steps li{position:relative}
+    .num{width:56px;height:56px;border-radius:50%;background:var(--action);color:var(--ground);display:grid;place-items:center;font:500 20px var(--display);position:relative;z-index:1;margin-bottom:24px;box-shadow:0 0 0 8px var(--alt)}
+    .steps h3{font:500 22px var(--display);letter-spacing:-.01em;margin-bottom:8px}
+    .steps p{color:var(--text-2);max-width:32ch}
+
+    /* FAQ */
+    .faq-grid{display:grid;grid-template-columns:5fr 7fr;gap:64px;align-items:start}
+    .faq .head .muted{margin-top:16px;max-width:30ch}
+    .qa details{background:var(--alt);border-radius:var(--r);padding:0 24px;margin-bottom:12px}
+    .qa summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0;font:500 18px var(--display)}
+    .qa summary::-webkit-details-marker{display:none}
+    .qa summary::after{content:"+";flex:none;width:32px;height:32px;border-radius:50%;background:var(--ground);display:grid;place-items:center;font:400 20px/1 var(--body);transition:transform .25s}
+    .qa details[open] summary::after{transform:rotate(45deg)}
+    .qa details p{color:var(--text-2);padding-bottom:22px;max-width:60ch}
+
+    /* Closing */
+    .closing{padding:32px 0 96px}
+    .closing-box{background:var(--inverse);color:var(--inverse-text);border-radius:24px;padding:72px 32px;text-align:center;position:relative;overflow:hidden}
+    .closing-box::before{content:"";position:absolute;inset:0;background-image:radial-gradient(#3a393b 1.2px,transparent 1.2px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 80% at 50% 0%,#000,transparent);mask-image:radial-gradient(ellipse 70% 80% at 50% 0%,#000,transparent)}
+    .closing-box > *{position:relative}
+    .closing-box h2{font:500 48px/1.05 var(--display);letter-spacing:-.03em;max-width:18ch;margin:0 auto}
+
+    /* Footer */
+    .site-footer{background:var(--alt);padding:72px 0 32px}
+    .foot{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+    .foot-brand p{margin-top:16px;color:var(--text-2);max-width:34ch}
+    .foot h3{font:600 13px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+    .foot a:not(.brand){display:block;text-decoration:none;color:var(--text-2);padding:4px 0}
+    .foot a:not(.brand):hover{color:var(--text);text-decoration:underline;text-underline-offset:4px}
+    .legal{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:56px;padding-top:24px;border-top:1px solid var(--hairline);font-size:14px;color:var(--muted)}
+
+    /* Modal */
+    dialog{border:0;background:transparent;padding:16px;max-width:none;max-height:none;width:100%;height:100%;margin:0;overflow:auto;color:var(--text)}
+    dialog:not([open]){display:none}
+    dialog[open]{display:grid;place-items:center}
+    dialog::backdrop{background:rgba(20,19,20,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+    .sheet{position:relative;background:var(--ground);border-radius:24px;width:100%;max-width:620px;padding:40px;box-shadow:0 40px 80px -30px rgba(0,0,0,.5);animation:pop .3s cubic-bezier(.2,.8,.2,1)}
+    @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+    .close{position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:50%;border:1px solid var(--hairline);background:var(--ground);cursor:pointer;display:grid;place-items:center}
+    .close:hover{border-color:var(--text)}
+    .close svg{width:18px;height:18px;fill:none;stroke:var(--text);stroke-width:1.8;stroke-linecap:round}
+    #mTitle{font:500 34px/1.1 var(--display);letter-spacing:-.03em;margin-bottom:8px;padding-right:48px}
+    #mHint{margin-bottom:24px}
+    .field{margin-bottom:18px;border:0}
+    .field label,.field legend{display:block;font:500 14px var(--body);margin-bottom:8px;padding:0}
+    .field small{color:var(--muted);font-weight:400}
+    input[type=text],input[type=email],textarea{width:100%;background:var(--alt);border:1px solid transparent;border-radius:12px;padding:13px 16px;font:400 16px var(--body);color:var(--text);transition:border-color .15s,background .15s}
+    textarea{resize:vertical;min-height:140px;line-height:1.5}
+    input::placeholder,textarea::placeholder{color:var(--muted)}
+    input:hover,textarea:hover{border-color:var(--hairline)}
+    input:focus,textarea:focus{outline:none;border-color:var(--text);background:var(--ground);box-shadow:0 0 0 3px rgba(20,19,20,.08)}
+    .invalid{border-color:var(--bad) !important}
+    .err{color:var(--bad);font-size:14px;margin-top:6px;min-height:0}
+    .err:empty{display:none}
+    .row-meta{display:flex;justify-content:space-between;gap:12px}
+    .count{margin-left:auto;font-size:13px;color:var(--muted);margin-top:6px;white-space:nowrap}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip input{position:absolute;opacity:0;pointer-events:none}
+    .chip span{display:inline-block;padding:8px 16px;border-radius:9999px;border:1px solid var(--hairline);background:var(--ground);cursor:pointer;font-size:15px;transition:all .15s}
+    .chip span:hover{border-color:var(--text)}
+    .chip input:checked + span{background:var(--action);color:var(--ground);border-color:var(--action)}
+    .chip input:focus-visible + span{outline:2px solid var(--text);outline-offset:3px}
+    .switch{display:inline-flex;align-items:center;gap:12px;cursor:pointer;margin:4px 0 18px;font-weight:500;font-size:15px}
+    .switch input{position:absolute;opacity:0}
+    .track{width:44px;height:26px;border-radius:9999px;background:var(--hairline);position:relative;transition:background .2s;flex:none}
+    .track::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+    .switch input:checked + .track{background:var(--action)}
+    .switch input:checked + .track::after{transform:translateX(18px)}
+    .switch input:focus-visible + .track{outline:2px solid var(--text);outline-offset:3px}
+    .id-fields{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;transition:opacity .2s}
+    .id-fields .full{grid-column:1/-1}
+    .id-fields.off{display:none}
+    .form-err{margin:0 0 12px;padding:12px 16px;background:#fdecec;border-radius:12px}
+    .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:8px}
+    .spin{display:none;width:16px;height:16px;border-radius:50%;border:2px solid rgba(252,252,253,.4);border-top-color:#fff;animation:rot .7s linear infinite}
+    .loading .spin{display:inline-block}
+    @keyframes rot{to{transform:rotate(360deg)}}
+    .done{text-align:center;padding:24px 0 8px}
+    .done h2{font:500 34px var(--display);letter-spacing:-.03em;margin:20px 0 8px}
+    .done .muted{max-width:38ch;margin:0 auto 28px}
+    .check{width:72px;height:72px;border-radius:50%;background:#e7f5ec;display:inline-grid;place-items:center}
+    .check svg{width:34px;height:34px;fill:none;stroke:var(--ok);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:30;animation:tick .5s .15s ease-out both}
+    @keyframes tick{from{stroke-dashoffset:30}to{stroke-dashoffset:0}}
+
+    /* Reveal */
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1)}
+    .reveal.in{opacity:1;transform:none}
+
+    /* Responsive */
+    @media (max-width:900px){
+    .menu-btn{display:block}
+    .nav{position:absolute;top:80px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;padding:8px 24px 24px;background:var(--ground);border-bottom:1px solid var(--hairline);display:none}
+    .nav.open{display:flex}
+    .nav a:not(.btn){padding:14px 0;font-size:18px}
+    .nav-cta{margin-top:12px;padding:13px 26px}
+    h1{font-size:60px}
+    .hero{padding:56px 0 64px}
+    .lede{font-size:18px}
+    .choices{grid-template-columns:1fr;margin-top:56px}
+    .card{min-height:0}
+    .card h2{padding-top:32px}
+    .band,.faq{padding:64px 0 48px}
+    .head h2,.closing-box h2{font-size:36px}
+    .steps{grid-template-columns:1fr;gap:32px}
+    .steps::before{top:28px;bottom:28px;left:27px;right:auto;width:2px;height:auto}
+    .steps li{padding-left:80px}
+    .num{position:absolute;left:0;top:0;margin:0}
+    .faq-grid{grid-template-columns:1fr;gap:32px}
+    .closing{padding-bottom:64px}
+    .closing-box{padding:56px 24px}
+    .foot{grid-template-columns:1fr 1fr}
+    .foot-brand{grid-column:1/-1}
+    .sheet{padding:28px 20px}
+    #mTitle{font-size:28px}
+    .id-fields{grid-template-columns:1fr}
+    .actions .btn{flex:1}
+    }
+    @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important}
+    html{scroll-behavior:auto}
+    .reveal{opacity:1;transform:none}
+    }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header" id="top">
+  <div class="wrap bar">
+    <a class="brand" href="#top" aria-label="NACOS BIU home">
+      <span class="logo"><img src="logo.png" alt="" onerror="this.remove()"><b>N</b></span>
+      <span>NACOS <em>BIU</em></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="#choose">Feedback</a>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+      <a class="btn nav-cta" href="#choose">Share feedback</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav" aria-label="Open menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow"><i></i> Student Feedback · Faculty of Computing</p>
+      <h1>Your voice <br>shapes <span class="mark">NACOS.</span></h1>
+      <p class="lede">Tell us what to improve, who to celebrate, or what went wrong. It takes a minute, and every message is read by the executive team.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#choose">Share feedback</a>
+        <a class="btn ghost" href="#how">How it works</a>
+      </div>
+
+      <div class="choices" id="choose" role="list">
+        <button class="card" type="button" data-type="suggestion" role="listitem">
+          <span class="icon"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></span>
+          <span class="tag">01</span>
+          <h2>Give a suggestion</h2>
+          <p>Have an idea for an event, a resource or a better way of doing things? Share it with us.</p>
+          <span class="go">Write a suggestion <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </button>
+        <button class="card" type="button" data-type="commendation" role="listitem">
+          <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.5-9 9-9 9z"/></svg></span>
+          <span class="tag">02</span>
+          <h2>Give commendation</h2>
+          <p>Did a lecturer, executive or fellow student go above and beyond? Say thank you.</p>
+          <span class="go">Write a commendation <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </button>
+        <button class="card" type="button" data-type="complaint" role="listitem">
+          <span class="icon"><svg viewBox="0 0 24 24"><path d="M4 4v17M4 4h12l-2 4 2 4H4"/></svg></span>
+          <span class="tag">03</span>
+          <h2>Give a complaint</h2>
+          <p>Something not right? Describe the problem clearly so it can be looked into and fixed.</p>
+          <span class="go">Write a complaint <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="how">
+    <div class="wrap">
+      <div class="head">
+        <p class="kicker">How it works</p>
+        <h2>Three steps. No sign-up.</h2>
+      </div>
+      <ol class="steps">
+        <li><span class="num">1</span><h3>Choose a type</h3><p>Pick suggestion, commendation or complaint so it reaches the right people.</p></li>
+        <li><span class="num">2</span><h3>Write your message</h3><p>Be as specific as you can. You can stay anonymous or leave your details.</p></li>
+        <li><span class="num">3</span><h3>We review it</h3><p>The executive team reads every submission and follows up where needed.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="faq" id="faq">
+    <div class="wrap faq-grid">
+      <div class="head">
+        <p class="kicker">FAQ</p>
+        <h2>Common questions</h2>
+        <p class="muted">Can't find your answer? Reach us through the contact details below.</p>
+      </div>
+      <div class="qa">
+        <details><summary>Is my feedback anonymous?</summary><p>Yes, if you tick "Submit anonymously" your name, matric number and email are not sent with your message.</p></details>
+        <details><summary>Who reads what I submit?</summary><p>The NACOS executive team at BIU reviews every submission. Complaints about staff are passed on through the proper channels.</p></details>
+        <details><summary>Will I get a reply?</summary><p>If you leave an email address we may follow up. Anonymous submissions cannot be replied to.</p></details>
+        <details><summary>How long does a response take?</summary><p>We aim to review submissions within a week, though some issues take longer to resolve.</p></details>
+        <details><summary>Can I submit more than once?</summary><p>Yes. Send a new message for each separate issue, suggestion or commendation.</p></details>
+        <details><summary>What should I avoid writing?</summary><p>Please keep messages respectful and factual. Abusive or false submissions may be ignored.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing">
+    <div class="wrap">
+      <div class="closing-box">
+        <h2>Help us build a better department.</h2>
+        <div class="hero-actions">
+          <a class="btn light" href="#choose">Share feedback</a>
+          <a class="btn ghost-inv" href="#faq">Read the FAQ</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" id="contact">
+  <div class="wrap foot">
+    <div class="foot-brand">
+      <a class="brand" href="#top"><span class="logo"><img src="logo.png" alt="" onerror="this.remove()"><b>N</b></span><span>NACOS <em>BIU</em></span></a>
+      <p>Nigerian Association of Computing Students, Faculty of Computing, Benson Idahosa University, Benin City.</p>
+    </div>
+    <div>
+      <h3>Feedback</h3>
+      <a href="#choose" data-open="suggestion">Suggestion</a>
+      <a href="#choose" data-open="commendation">Commendation</a>
+      <a href="#choose" data-open="complaint">Complaint</a>
+    </div>
+    <div>
+      <h3>Help</h3>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div>
+      <h3>Contact</h3>
+      <a href="mailto:nacos@biu.edu.ng">nacos@biu.edu.ng</a>
+      <a href="#">Instagram</a>
+      <a href="#">X / Twitter</a>
+    </div>
+  </div>
+  <div class="wrap legal">
+    <span>© <span id="year">2026</span> NACOS BIU. All rights reserved.</span>
+    <span>Messages are shared only with the NACOS executive team.</span>
+  </div>
+</footer>
+
+<dialog id="modal" aria-labelledby="mTitle">
+  <div class="sheet">
+    <button class="close" type="button" id="closeBtn" aria-label="Close form">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+
+    <form id="form" novalidate method="POST">
+        {% csrf_token %}
+      <p class="kicker" id="mKicker"></p>
+      <h2 id="mTitle"></h2>
+      <p class="muted" id="mHint"></p>
+
+      <fieldset class="field">
+        <legend>Category</legend>
+        <div class="chips" id="chips"></div>
+      </fieldset>
+
+      <div class="field">
+        <label for="subject">Subject</label>
+        <input id="subject" name="subject" type="text" maxlength="100" autocomplete="off" required>
+        <p class="err" id="subjectErr" role="alert"></p>
+      </div>
+
+      <div class="field">
+        <label for="message">Your message</label>
+        <textarea id="message" name="message" rows="6" maxlength="1500" required></textarea>
+        <div class="row-meta"><p class="err" id="messageErr" role="alert"></p><span class="count" id="count">0 / 1500</span></div>
+      </div>
+
+      <label class="switch">
+        <input type="checkbox" id="anon" name="anonymous">
+        <span class="track"></span>
+        <span>Submit anonymously</span>
+      </label>
+
+      <div class="id-fields" id="idFields">
+        <div class="field"><label for="name">Full name <small>(optional)</small></label><input id="name" name="name" type="text" autocomplete="name"></div>
+        <div class="field"><label for="matric">Matric number <small>(optional)</small></label><input id="matric" name="matric" type="text" autocomplete="off"></div>
+        
+      </div>
+
+      <p class="err form-err" id="formErr" role="alert"></p>
+
+      <div class="actions">
+        <button class="btn ghost" type="button" id="cancelBtn">Cancel</button>
+        <button class="btn" type="submit" id="submitBtn"><span class="lbl">Submit</span><span class="spin" aria-hidden="true"></span></button>
+      </div>
+    </form>
+
+    <div class="done" id="done" hidden>
+      <span class="check"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+      <h2>Thank you!</h2>
+      <p class="muted" id="doneMsg"></p>
+      <button class="btn" type="button" id="doneBtn">Close</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+   
+    const CONFIG = {
+    endpoint: "/",
+    simulate: false   // true = fake a successful submit (no backend yet). Set to false when your API is ready.
+    };
+
+    const TYPES = {
+    suggestion: {
+        kicker: "Suggestion",
+        title: "Give a suggestion",
+        hint: "Share an idea that could improve NACOS or the department.",
+        subjectPh: "e.g. Weekly coding clinics",
+        messagePh: "Describe your idea and how it would help students...",
+        categories: ["Events", "Academics", "Resources", "Website / Tech", "Other"],
+        done: "Your suggestion has been sent to the NACOS executive team."
+    },
+    commendation: {
+        kicker: "Commendation",
+        title: "Give commendation",
+        hint: "Recognise someone or something that deserves appreciation.",
+        subjectPh: "e.g. Great support during the hackathon",
+        messagePh: "Who or what are you commending, and what did they do well?",
+        categories: ["Lecturer", "Executive", "Fellow student", "Event", "Other"],
+        done: "Your commendation has been sent. Thank you for recognising good work."
+    },
+    complaint: {
+        kicker: "Complaint",
+        title: "Give a complaint",
+        hint: "Describe the problem clearly so it can be looked into.",
+        subjectPh: "e.g. Lab computers not working",
+        messagePh: "What happened, when and where? Include any details that help us investigate...",
+        categories: ["Academics", "Facilities", "Conduct", "Events", "Other"],
+        done: "Your complaint has been received and will be reviewed by the executive team."
+    }
+    };
+
+    const $ = (s, r = document) => r.querySelector(s);
+    const modal = $("#modal"), form = $("#form"), done = $("#done");
+    let current = null, lastTrigger = null;
+
+    /* ---------- Mobile menu ---------- */
+    const menuBtn = $("#menuBtn"), nav = $("#nav");
+    function setMenu(open) {
+    nav.classList.toggle("open", open);
+    menuBtn.setAttribute("aria-expanded", String(open));
+    menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    }
+    menuBtn.addEventListener("click", () => setMenu(!nav.classList.contains("open")));
+    nav.addEventListener("click", e => { if (e.target.closest("a")) setMenu(false); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") setMenu(false); });
+
+    /* ---------- Card spotlight ---------- */
+    document.querySelectorAll(".card").forEach(card => {
+    card.addEventListener("pointermove", e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", e.clientX - r.left + "px");
+        card.style.setProperty("--my", e.clientY - r.top + "px");
+    });
+    });
+
+    /* ---------- Open / close modal ---------- */
+    function openForm(type, trigger) {
+    current = type;
+    lastTrigger = trigger || null;
+    const t = TYPES[type];
+    $("#mKicker").textContent = t.kicker;
+    $("#mTitle").textContent = t.title;
+    $("#mHint").textContent = t.hint;
+    $("#subject").placeholder = t.subjectPh;
+    $("#message").placeholder = t.messagePh;
+    $("#chips").innerHTML = t.categories.map((c, i) =>
+        `<label class="chip"><input type="radio" name="category" value="${c}" ${i === 0 ? "checked" : ""}><span>${c}</span></label>`
+    ).join("");
+    resetForm();
+    form.hidden = false; done.hidden = true;
+    if (!modal.open) modal.showModal();
+    document.body.style.overflow = "hidden";
+    setTimeout(() => $("#subject").focus(), 50);
+    }
+
+    function closeForm() {
+    if (modal.open) modal.close();
+    }
+    modal.addEventListener("close", () => {
+    document.body.style.overflow = "";
+    if (lastTrigger) lastTrigger.focus();
+    });
+    // click on backdrop closes
+    modal.addEventListener("click", e => { if (e.target === modal) closeForm(); });
+    $("#closeBtn").addEventListener("click", closeForm);
+    $("#cancelBtn").addEventListener("click", closeForm);
+    $("#doneBtn").addEventListener("click", closeForm);
+
+    document.querySelectorAll(".card").forEach(c =>
+    c.addEventListener("click", () => openForm(c.dataset.type, c)));
+    document.querySelectorAll("[data-open]").forEach(a =>
+    a.addEventListener("click", e => { e.preventDefault(); openForm(a.dataset.open, a); }));
+
+    /* ---------- Form behaviour ---------- */
+    function resetForm() {
+    form.reset();
+    clearErrors();
+    $("#idFields").classList.remove("off");
+    $("#count").textContent = "0 / 1500";
+    $("#submitBtn").disabled = false;
+    $("#submitBtn").classList.remove("loading");
+    $("#submitBtn .lbl").textContent = "Submit";
+    }
+
+    function clearErrors() {
+    document.querySelectorAll(".err").forEach(e => e.textContent = "");
+    document.querySelectorAll(".invalid").forEach(e => e.classList.remove("invalid"));
+    }
+
+    function fail(id, msg, inputId) {
+    $(id).textContent = msg;
+    if (inputId) $(inputId).classList.add("invalid");
+    }
+
+    $("#anon").addEventListener("change", e => {
+    $("#idFields").classList.toggle("off", e.target.checked);
+    });
+
+    $("#message").addEventListener("input", e => {
+    $("#count").textContent = `${e.target.value.length} / 1500`;
+    e.target.classList.remove("invalid"); $("#messageErr").textContent = "";
+    });
+    $("#subject").addEventListener("input", e => {
+    e.target.classList.remove("invalid"); $("#subjectErr").textContent = "";
+    });
+
+    function validate() {
+    clearErrors();
+    let firstBad = null;
+    const subject = $("#subject").value.trim();
+    const message = $("#message").value.trim();
+    const anon = $("#anon").checked;
+
+    if (subject.length < 3) { fail("#subjectErr", "Please add a short subject (at least 3 characters).", "#subject"); firstBad = firstBad || $("#subject"); }
+    if (message.length < 20) { fail("#messageErr", "Please write at least 20 characters so we can understand you.", "#message"); firstBad = firstBad || $("#message"); }
+
+    if (firstBad) { firstBad.focus(); return false; }
+    return true;
+    }
+
+    function getCookie(name) {
+    const m = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+    return m ? decodeURIComponent(m[1]) : "";
+    }
+
+    function buildPayload() {
+    const anon = $("#anon").checked;
+    return {
+        type: current,
+        category: (form.querySelector('input[name="category"]:checked') || {}).value || "",
+        subject: $("#subject").value.trim(),
+        message: $("#message").value.trim(),
+        anonymous: anon,
+        name: anon ? "" : $("#name").value.trim(),
+        matric: anon ? "" : $("#matric").value.trim(),
+    };
+    }
+
+    async function send(payload) {
+        if (CONFIG.simulate) {
+            await new Promise(r => setTimeout(r, 900));
+            console.log("Feedback payload (simulated):", payload);
+            return;
+        }
+        const res = await fetch(CONFIG.endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
+            credentials: "same-origin",
+            body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+            let msg = "Something went wrong. Please try again.";
+            try { const j = await res.json(); if (j && j.error) msg = j.error; } catch (_) {}
+            throw new Error(msg);
+        }
+    }
+
+    form.addEventListener("submit", async e => {
+    e.preventDefault();
+    if (!validate()) return;
+    const btn = $("#submitBtn");
+    btn.disabled = true; btn.classList.add("loading");
+    $("#submitBtn .lbl").textContent = "Sending";
+    $("#formErr").textContent = "";
+    try {
+        await send(buildPayload());
+        $("#doneMsg").textContent = TYPES[current].done;
+        form.hidden = true; done.hidden = false;
+        $("#doneBtn").focus();
+    } catch (err) {
+        $("#formErr").textContent = err.message || "Could not send. Check your connection and try again.";
+        btn.disabled = false; btn.classList.remove("loading");
+        $("#submitBtn .lbl").textContent = "Try again";
+    }
+    });
+
+    /* ---------- Scroll reveal ---------- */
+    const targets = document.querySelectorAll(".choices .card, .steps li, .qa details, .closing-box, .head");
+    targets.forEach(t => t.classList.add("reveal"));
+    if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, { threshold: .12 });
+    targets.forEach((t, i) => { t.style.transitionDelay = (i % 3) * 80 + "ms"; io.observe(t); });
+    } else {
+    targets.forEach(t => t.classList.add("in"));
+    }
+
+    $("#year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
